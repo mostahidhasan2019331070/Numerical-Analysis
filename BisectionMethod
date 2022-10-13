@@ -1,0 +1,132 @@
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+
+
+
+#determine the value of funtion for x:
+def f(x, func):
+    val = eval(func)
+    return val
+
+
+#implement FalsePosition Method:
+def FalsePositionMethod(func, l, r, iteratinos, error_tolerance):
+    cnt = 1
+    
+    prev_val = (l+r)/2.0
+    xm = -1
+    error = 0    
+    ErrorList = []
+    IterationList=[]
+    Xu = []
+    Xl=[]
+    Xm=[]
+    FuncList=[]
+
+    while cnt <= iterations:
+        cnt = cnt + 1
+        xm = (l+r)/2.0
+        new_val = f(xm, func)
+
+        if (cnt == 2):
+
+            IterationList.append((cnt-1))
+            Xl.append(l)
+            Xu.append(r)
+            Xm.append(xm)
+            ErrorList.append(np.nan)
+            FuncList.append(new_val)
+
+        else:
+            error = abs(xm - prev_val) / (xm * 1.00)
+            error = error * 100.0
+            IterationList.append((cnt-1))
+            Xl.append(l)
+            Xu.append(r)
+            Xm.append(xm)
+            ErrorList.append(error)
+            FuncList.append(new_val)
+            prev_val = xm
+
+        if ((f(xm, func) * f(l, func)) < 0):
+            r = xm
+        else:
+            l = xm
+      #datatable creation:
+    data_table = pd.DataFrame({"Iteration":IterationList, "Xl":Xl, "Xu":Xu, "Xm":Xm, "Error(%)":ErrorList, "f(Xm)":FuncList})
+                              
+    data_table.set_index("Iteration")
+    print(data_table)
+    print("The Root is "+ str(xm) + " with error "+str(error))
+    if(error>error_tolerance):
+        print("Can't get accurate result you wanted due for iteration limitations")
+  
+  #Graph part:
+    
+    x=[]
+    y=[]
+    for i in range(-1000,1000,3):
+        x.append(i)
+        y.append(f(i,func))
+        
+    
+    x=np.array(x)
+    y=np.array(y)
+    
+    plt.axhline(y = 0.0, color = 'r', linestyle = '-')
+    plt.axvline(x=0.0,color='r')
+    plt.xlabel("X")
+    plt.ylabel("F(X)")
+
+    plt.plot(x,y)
+    plt.show()
+
+#input part:
+
+while True:
+    print("Number of function taken for BisectionMethod")
+    a=input()
+    if(a==''):
+       break
+    else:
+        print(" Please enter the function to find root using BisectionMethod")
+        func = input()
+
+        while True:
+              print(" Please input the lower limit for finding the root ")
+              a = input()
+              a = float(a)
+              print(" Please input the upper limit for finding the root ")
+              b = input()
+              b = float(b)
+              print("Enter the number of iterations")
+              iterations = int(input())
+              print("Enter the max error tolerance")
+              error_tolerance = float(input())
+
+              if (f(a, func) * f(b, func) < 0):
+                  FalsePositionMethod(func, a, b, iterations, error_tolerance)
+                  break
+              else:
+                  print("Range is invalid .Please try again")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
